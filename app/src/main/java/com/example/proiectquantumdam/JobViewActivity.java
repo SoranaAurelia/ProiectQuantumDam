@@ -8,6 +8,8 @@ import android.os.Bundle;
 import android.widget.TextView;
 
 import com.example.proiectquantumdam.dto.JobResultDto;
+import com.example.proiectquantumdam.model.QuantumJob;
+import com.example.proiectquantumdam.service.OnJobInfoReceivedCallback;
 import com.example.proiectquantumdam.service.OnJobResultReceivedCallback;
 import com.example.proiectquantumdam.service.QuantumServiceInterface;
 import com.github.mikephil.charting.charts.BarChart;
@@ -36,42 +38,36 @@ public class JobViewActivity extends AppCompatActivity {
         Intent intent = getIntent();
         String jobId = intent.getStringExtra("jobId");
 
-        TextView textView = findViewById(R.id.v_job_id);
-        textView.setText(jobId);
+        TextView tvJobId = findViewById(R.id.v_job_id);
+        TextView tvStatus = findViewById(R.id.v_job_status);
+        TextView tvBackend = findViewById(R.id.v_job_backend);
+        TextView tvDate = findViewById(R.id.v_job_date);
+        tvJobId.setText(jobId);
 
         QuantumServiceInterface quantumInstance = QuantumServiceInterface.GetInstance();
         if(quantumInstance != null){
             quantumInstance.getJobResult(jobId, new OnJobResultReceivedCallback() {
                 @Override
                 public void onJobResultReceivedCallback(ArrayList<Map<String, Double>> distributions) {
-                    int len = 0;
-                    for(Map.Entry<String, Double> entry: distributions.get(0).entrySet())
-                    {
-                        String key=entry.getKey(); // "00" -> 9
-                        len = key.length();
-                        int decimal = Integer.parseInt(key, 2);
-                        Double result = entry.getValue();
+                    consumeDistributions(distributions);
+                }
+            });
 
-                        barEntriesArrayList.add(new BarEntry(decimal, result.floatValue()));
+            quantumInstance.getJobInfo(jobId, new OnJobInfoReceivedCallback() {
+                @Override
+                public void onJobInfoReceivedCallback(QuantumJob quantumJob) {
+                    tvStatus.setText(quantumJob.status);
+                    tvBackend.setText(quantumJob.backend);
+                    tvDate.setText(quantumJob.created.toString());
+
+                    if(quantumJob.status.equals("Completed")) {
+                        tvStatus.setCompoundDrawablesWithIntrinsicBounds(R.drawable.job_completed, 0, 0, 0);
+                        tvStatus.setCompoundDrawablePadding(2);
                     }
-
-                    double num_labels = Math.pow(2, len);
-                    for(int i=0; i<num_labels; i++){
-                        StringBuilder label = new StringBuilder(Integer.toBinaryString(i));
-                        int tmp_len = label.length();
-                        while (tmp_len < len){
-                            label.insert(0, "0");
-                            tmp_len++;
-                        }
-                        dataLabels.add(label.toString());
-
-                        if(!distributions.get(0).containsKey(label.toString()))
-                            barEntriesArrayList.add(new BarEntry(i, 0));
+                    else{
+                        tvStatus.setCompoundDrawablesWithIntrinsicBounds(R.drawable.status_canceled, 0, 0, 0);
+                        tvStatus.setCompoundDrawablePadding(2);
                     }
-
-                    updateChart();
-
-
                 }
             });
         }
@@ -83,6 +79,34 @@ public class JobViewActivity extends AppCompatActivity {
 
     }
 
+    public void consumeDistributions(ArrayList<Map<String, Double>> distributions){
+        int len = 0;
+        for(Map.Entry<String, Double> entry: distributions.get(0).entrySet())
+        {
+            String key=entry.getKey(); // "00" -> 9
+            len = key.length();
+            int decimal = Integer.parseInt(key, 2);
+            Double result = entry.getValue();
+
+            barEntriesArrayList.add(new BarEntry(decimal, result.floatValue()));
+        }
+
+        double num_labels = Math.pow(2, len);
+        for(int i=0; i<num_labels; i++){
+            StringBuilder label = new StringBuilder(Integer.toBinaryString(i));
+            int tmp_len = label.length();
+            while (tmp_len < len){
+                label.insert(0, "0");
+                tmp_len++;
+            }
+            dataLabels.add(label.toString());
+
+            if(!distributions.get(0).containsKey(label.toString()))
+                barEntriesArrayList.add(new BarEntry(i, 0));
+        }
+
+        updateChart();
+    }
     private void updateChart(){
         // creating a new bar data set.
         barDataSet = new BarDataSet(barEntriesArrayList, "Sampler Output");

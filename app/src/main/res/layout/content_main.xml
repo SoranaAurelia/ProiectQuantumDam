@@ -27,7 +27,7 @@
 
         <TextView
             android:id="@+id/tv_welcome"
-            style="@style/TextAppearance.MaterialComponents.Headline3"
+            style="@style/TextAppearance.MaterialComponents.Headline4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/welcome"

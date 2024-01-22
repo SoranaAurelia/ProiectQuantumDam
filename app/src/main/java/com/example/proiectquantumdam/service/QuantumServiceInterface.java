@@ -7,6 +7,7 @@ import android.util.Log;
 import com.example.proiectquantumdam.controller.JobsController;
 import com.example.proiectquantumdam.dto.JobResultDto;
 import com.example.proiectquantumdam.dto.JobsResponseDto;
+import com.example.proiectquantumdam.model.QuantumJob;
 
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -113,9 +114,24 @@ public class QuantumServiceInterface {
         });
     }
 
-    public void subscribeToJobUpdates(){
+    public void getJobInfo(String jobId, OnJobInfoReceivedCallback callback){
+        JobsController jobService = retrofit.create(JobsController.class);
+        Call<QuantumJob> call = jobService.getJobInfo(jobId);
+        call.enqueue(new Callback<QuantumJob>() {
+            @Override
+            public void onResponse( Call<QuantumJob> call, Response<QuantumJob> response) {
+                if(response.isSuccessful()){
+                    callback.onJobInfoReceivedCallback(response.body());
+                }
+            }
 
+            @Override
+            public void onFailure(Call<QuantumJob> call, Throwable t) {
+                t.printStackTrace();
+            }
+        });
     }
+
 
     public void GetObjectJobs(OnJobsListReceivedCallback callback) {
         JobsController jobService = retrofit.create(JobsController.class);
