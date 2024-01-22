@@ -24,6 +24,8 @@ public class JobsAdapter extends RecyclerView.Adapter<JobsAdapter.JobViewHolder>
 
         TextView jobId;
         TextView status;
+        TextView backend;
+        TextView dateCreated;
 
         JobViewHolder(View itemView) {
             super(itemView);
@@ -31,8 +33,8 @@ public class JobsAdapter extends RecyclerView.Adapter<JobsAdapter.JobViewHolder>
 
             jobId = mView.findViewById(R.id.job_id);
             status = mView.findViewById(R.id.job_status);
-
-
+            backend = mView.findViewById(R.id.job_backend);
+            dateCreated = mView.findViewById(R.id.date_created);
         }
     }
 
@@ -56,6 +58,8 @@ public class JobsAdapter extends RecyclerView.Adapter<JobsAdapter.JobViewHolder>
     public void onBindViewHolder(@NonNull JobViewHolder holder, int position) {
         holder.jobId.setText(jobs.get(position).id);
         holder.status.setText(jobs.get(position).status);
+        holder.backend.setText(jobs.get(position).backend);
+        holder.dateCreated.setText(jobs.get(position).created.toString());
 
         if(jobs.get(position).status.equals("Completed")) {
             holder.status.setCompoundDrawablesWithIntrinsicBounds(R.drawable.job_completed, 0, 0, 0);

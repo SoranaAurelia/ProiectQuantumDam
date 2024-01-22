@@ -11,8 +11,11 @@
     <string name="menu_gallery">Gallery</string>
     <string name="menu_slideshow">Slideshow</string>
     <string name="check_api">Check API</string>
-    <string name="job">Job Id</string>
+    <string name="job">Job Id:</string>
     <string name="welcome">Welcome!</string>
     <string name="w_jobs">Jobs:</string>
     <string name="status">Status:</string>
+    <string name="sample_job">sample_job</string>
+    <string name="date">Date</string>
+    <string name="backend">backend</string>
 </resources>

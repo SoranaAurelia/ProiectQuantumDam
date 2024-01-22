@@ -66,13 +66,17 @@ public class MainActivity extends AppCompatActivity {
         btn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v)
             {
-                QuantumServiceInterface.GetInstance().GetJobs(new OnJobsListReceivedCallback() {
-                    @Override
-                    public void onJobsListReceivedCallback(List<QuantumJob> jobs) {
-                        generateDataList(jobs);
-                        createToast();
-                    }
-                });
+
+                QuantumServiceInterface quantumServiceInstance = QuantumServiceInterface.GetInstance();
+                if(quantumServiceInstance != null) {
+                    quantumServiceInstance.GetJobs(new OnJobsListReceivedCallback() {
+                        @Override
+                        public void onJobsListReceivedCallback(List<QuantumJob> jobs) {
+                            generateDataList(jobs);
+                            createToast();
+                        }
+                    });
+                }
             }
         });
     }

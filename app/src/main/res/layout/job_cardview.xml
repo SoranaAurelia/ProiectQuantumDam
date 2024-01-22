@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="300dp"
+    android:layout_width="400dp"
     android:layout_height="wrap_content"
     android:layout_marginEnd="8dp"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <androidx.cardview.widget.CardView
-        android:layout_width="300dp"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -26,39 +26,80 @@
             android:layout_height="match_parent">
 
             <TextView
+                android:id="@+id/job_id_title"
+                android:layout_width="wrap_content"
+                style="@style/TextAppearance.Material3.TitleMedium"
+
+                android:layout_height="wrap_content"
+                android:text="@string/job"
+                android:layout_marginTop="4dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                />
+            <TextView
                 android:id="@+id/job_id"
                 style="@style/TextAppearance.Material3.TitleMedium"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:text="@string/job"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
+                android:text="@string/sample_job"
+                app:layout_constraintStart_toEndOf="@id/job_id_title"
                 app:layout_constraintTop_toTopOf="parent"/>
-            <TextView
-                android:id="@+id/job_status"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:layout_constraintEnd_toEndOf="parent"
-                android:text="@string/status"
-                style="@style/TextAppearance.Material3.BodyMedium"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/job_id"
-                android:layout_marginTop="4dp"
-                android:drawablePadding="2pt"
-                app:drawableStartCompat="@drawable/status_done" />
 
             <LinearLayout
+                android:id="@+id/other_job_info"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/job_status"
+                app:layout_constraintTop_toBottomOf="@id/job_id"
                 android:layout_marginTop="4dp">
+                <TextView
+                    android:id="@+id/job_status"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:text="@string/status"
+                    style="@style/TextAppearance.Material3.BodyMedium"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/job_id"
+                    android:layout_marginTop="4dp"
+                    android:drawablePadding="2pt"
+                    app:drawableStartCompat="@drawable/status_done" />
+
+                <TextView
+                    android:id="@+id/job_backend"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:text="@string/backend"
+                    style="@style/TextAppearance.Material3.BodyMedium"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/job_id"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginStart="10dp"
+                    android:drawablePadding="2pt"
+                    app:drawableStartCompat="@drawable/backend_icon" />
+
+
+
 
 
             </LinearLayout>
+
+            <TextView
+                android:id="@+id/date_created"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/date"
+                style="@style/TextAppearance.Material3.BodyMedium"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/other_job_info"
+                android:layout_marginTop="4dp"
+                android:drawablePadding="2pt"
+                app:drawableLeftCompat="@drawable/baseline_access_time_24" />
+
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>
