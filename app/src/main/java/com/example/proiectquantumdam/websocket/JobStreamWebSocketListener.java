@@ -1,19 +1,10 @@
 package com.example.proiectquantumdam.websocket;
 
 
-import android.app.NotificationManager;
-import android.content.Context;
 import android.util.Log;
-
-import com.example.proiectquantumdam.utils.NotificationBuilderHelper;
 
 import org.json.JSONObject;
 
-import java.util.ConcurrentModificationException;
-import java.util.concurrent.TimeUnit;
-
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.WebSocket;
 import okhttp3.WebSocketListener;
@@ -39,7 +30,7 @@ public final class JobStreamWebSocketListener extends WebSocketListener {
             JSONObject jsonObject = new JSONObject(text);
             String jobId = jsonObject.getString("id");
             String status = jsonObject.getString("status");
-            callback.onJobsListReceivedCallback();
+            callback.onStatusUpdateReceivedCallback(status);
         }
         catch (Exception e){
             Log.e("E", e.getMessage());

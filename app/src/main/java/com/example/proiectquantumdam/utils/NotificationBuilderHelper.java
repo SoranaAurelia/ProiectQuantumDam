@@ -15,11 +15,11 @@ import com.example.proiectquantumdam.R;
 
 public class NotificationBuilderHelper {
 
-    public static Notification createNotificationCompatBuilder(Context context, String channelId) {
+    public static Notification createNotificationCompatBuilder(Context context, String channelId, String status) {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, channelId)
                 .setSmallIcon(R.drawable.backend_icon)
                 .setContentTitle("Job updated")
-                .setContentText("A job was updated")
+                .setContentText("A job was updated. Status: " + status)
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT);
 
         Intent intent = new Intent(context, MainActivity.class);

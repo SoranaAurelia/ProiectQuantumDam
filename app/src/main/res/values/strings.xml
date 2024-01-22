@@ -2,8 +2,8 @@
     <string name="app_name">ProiectQuantumDam</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="nav_header_title">Android Studio</string>
-    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_title">IBM Quantum API</string>
+    <string name="nav_header_subtitle">Change preconfigured values</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
     <string name="notification_channel_id">NotificationChannelId</string>
@@ -19,4 +19,5 @@
     <string name="sample_job">sample_job</string>
     <string name="date">Date</string>
     <string name="backend">backend</string>
+    <string name="change_service_and_iam_identifier">Change Service and IAM identifier</string>
 </resources>

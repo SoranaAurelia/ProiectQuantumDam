@@ -41,6 +41,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.proiectquantumdam.databinding.ActivityMainBinding;
 
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
@@ -55,6 +57,8 @@ public class MainActivity extends AppCompatActivity {
     private JobsAdapter jobsAdapter;
     private NotificationManager notificationManager;
 
+    private ExecutorService executorService;
+
     void requestNotificationPermission(){
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
             if(ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED){
@@ -63,15 +67,33 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         requestNotificationPermission();
         ConfigureNotificationChannel();
+        executorService = Executors.newSingleThreadExecutor();
 
         PropertyReader propertyReader = new PropertyReader("config.properties", getApplicationContext());
         QuantumServiceInterface.ConfigureQuantumService(propertyReader.GetProperty("serviceCrn"), propertyReader.GetProperty("apiKey"), propertyReader.GetProperty("apiUrl"));
+
+        executorService.execute(() -> {
+            QuantumServiceInterface quantumServiceInstance = QuantumServiceInterface.GetInstance();
+            if(quantumServiceInstance != null) {
+                quantumServiceInstance.getJobs(new OnJobsListReceivedCallback() {
+                    @Override
+                    public void onJobsListReceivedCallback(List<QuantumJob> jobs) {
+                        generateDataList(jobs);
+                        createToast();
+
+                    }
+                });
+            }
+
+            StartJobStreamListener(notificationManager, getApplicationContext());
+        });
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
@@ -80,28 +102,6 @@ public class MainActivity extends AppCompatActivity {
         binding.appBarMain.fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-        DrawerLayout drawer = binding.drawerLayout;
-        NavigationView navigationView = binding.navView;
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
-        mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_home, R.id.nav_gallery, R.id.nav_slideshow)
-                .setOpenableLayout(drawer)
-                .build();
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
-        NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
-        NavigationUI.setupWithNavController(navigationView, navController);
-
-        Button btn = findViewById(R.id.button);
-
-        btn.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v)
-            {
-
                 QuantumServiceInterface quantumServiceInstance = QuantumServiceInterface.GetInstance();
                 if(quantumServiceInstance != null) {
                     quantumServiceInstance.getJobs(new OnJobsListReceivedCallback() {
@@ -113,9 +113,21 @@ public class MainActivity extends AppCompatActivity {
                         }
                     });
                 }
-                StartJobStreamListener(notificationManager, getApplicationContext());
+
             }
         });
+        DrawerLayout drawer = binding.drawerLayout;
+        NavigationView navigationView = binding.navView;
+        // Passing each menu ID as a set of Ids because each
+        // menu should be considered as top level destinations.
+        mAppBarConfiguration = new AppBarConfiguration.Builder(
+                R.id.nav_home, R.id.nav_gallery)
+                .setOpenableLayout(drawer)
+                .build();
+        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
+        NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
+        NavigationUI.setupWithNavController(navigationView, navController);
+
     }
 
     public void StartJobStreamListener(NotificationManager notificationManager, Context context) {
@@ -131,8 +143,8 @@ public class MainActivity extends AppCompatActivity {
                 .build();
         JobStreamWebSocketListener listener = new JobStreamWebSocketListener(new OnMessageReceivedCallback() {
             @Override
-            public void onJobsListReceivedCallback() {
-                notificationManager.notify(0, NotificationBuilderHelper.createNotificationCompatBuilder(context, getResources().getString(R.string.notification_channel_id)));
+            public void onStatusUpdateReceivedCallback(String status) {
+                notificationManager.notify(0, NotificationBuilderHelper.createNotificationCompatBuilder(context, getResources().getString(R.string.notification_channel_id), status));
             }
         });
 
