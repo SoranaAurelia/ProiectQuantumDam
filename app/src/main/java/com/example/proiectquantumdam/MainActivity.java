@@ -118,7 +118,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    public static void StartJobStreamListener(NotificationManager notificationManager, Context context) {
+    public void StartJobStreamListener(NotificationManager notificationManager, Context context) {
         OkHttpClient client = new OkHttpClient.Builder()
                 .readTimeout(0,  TimeUnit.MILLISECONDS)
                 .build();
@@ -132,7 +132,7 @@ public class MainActivity extends AppCompatActivity {
         JobStreamWebSocketListener listener = new JobStreamWebSocketListener(new OnMessageReceivedCallback() {
             @Override
             public void onJobsListReceivedCallback() {
-                notificationManager.notify(0, NotificationBuilderHelper.createNotificationCompatBuilder(context, "NotificationChannelId"));
+                notificationManager.notify(0, NotificationBuilderHelper.createNotificationCompatBuilder(context, getResources().getString(R.string.notification_channel_id)));
             }
         });
 
@@ -173,7 +173,7 @@ public class MainActivity extends AppCompatActivity {
             NotificationChannel channel = notificationManager.getNotificationChannel("NotificationChannelId");
             if(channel == null) {
                 int importance = NotificationManager.IMPORTANCE_DEFAULT;
-                channel = new NotificationChannel("NotificationChannelId", "Some Description", importance);
+                channel = new NotificationChannel(getResources().getString(R.string.notification_channel_id), "Some Description", importance);
                 channel.setLightColor(Color.GREEN);
                 channel.enableVibration(true);
                 // Register the channel with the system; you can't change the importance
