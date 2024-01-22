@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "87370171144",
+    "project_id": "quantumjobs-8edb0",
+    "storage_bucket": "quantumjobs-8edb0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:87370171144:android:bf4e90c9261bde6806e2bd",
+        "android_client_info": {
+          "package_name": "com.example.proiectquantumdam"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAir8T0SvzngmHnXile0dF6XPd4EamGrEs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

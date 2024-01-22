@@ -11,6 +11,7 @@ import android.graphics.Color;
 import android.graphics.drawable.Icon;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Menu;
@@ -25,6 +26,8 @@ import com.example.proiectquantumdam.utils.NotificationBuilderHelper;
 import com.example.proiectquantumdam.utils.PropertyReader;
 import com.example.proiectquantumdam.websocket.JobStreamWebSocketListener;
 import com.example.proiectquantumdam.websocket.OnMessageReceivedCallback;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
 
@@ -42,6 +45,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.proiectquantumdam.databinding.ActivityMainBinding;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -95,7 +99,7 @@ public class MainActivity extends AppCompatActivity {
                 });
             }
 
-            StartJobStreamListener(notificationManager, getApplicationContext());
+            //StartJobStreamListener(notificationManager, getApplicationContext());
         });
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
@@ -131,7 +135,23 @@ public class MainActivity extends AppCompatActivity {
 //        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
 //        NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
 //        NavigationUI.setupWithNavController(navigationView, navController);
+        FirebaseMessaging.getInstance().getToken()
+                .addOnCompleteListener(new OnCompleteListener<String>() {
+                    @Override
+                    public void onComplete(@NonNull Task<String> task) {
+                        if (!task.isSuccessful()) {
+                            Log.w("I", "Fetching FCM registration token failed", task.getException());
+                            return;
+                        }
 
+                        // Get new FCM registration token
+                        String token = task.getResult();
+
+                        // Log and toast
+                        Log.d("I", token);
+                        Toast.makeText(MainActivity.this, token, Toast.LENGTH_LONG).show();
+                    }
+                });
     }
 
     public void StartJobStreamListener(NotificationManager notificationManager, Context context) {
