@@ -10,6 +10,7 @@ import com.example.proiectquantumdam.adapter.JobsAdapter;
 import com.example.proiectquantumdam.model.QuantumJob;
 import com.example.proiectquantumdam.service.OnJobsListReceivedCallback;
 import com.example.proiectquantumdam.service.QuantumServiceInterface;
+import com.example.proiectquantumdam.utils.PropertyReader;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
 
@@ -37,7 +38,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        QuantumServiceInterface.ConfigureQuantumService("", "", "");
+
+        PropertyReader propertyReader = new PropertyReader("config.properties", getApplicationContext());
+        QuantumServiceInterface.ConfigureQuantumService(propertyReader.GetProperty("serviceCrn"), propertyReader.GetProperty("apiKey"), propertyReader.GetProperty("apiUrl"));
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());

@@ -1,7 +1,9 @@
 package com.example.proiectquantumdam.utils;
 
 import android.content.Context;
+import android.content.res.AssetManager;
 
+import java.io.InputStream;
 import java.util.Properties;
 
 public class PropertyReader {
@@ -9,22 +11,19 @@ public class PropertyReader {
     private Context context;
     private Properties properties;
 
-    public PropertyReader(Context context){
+    public PropertyReader(String fileName, Context context){
         this.context=context;
-        properties = new Properties();
-    }
-
-    public Properties GetProperties(String file){
-        try{
-//            AssetManager assetManager = context.getAssets();
-//            InputStream inputStream = assetManager.open(file);
-////            InputStream inputStream = new FileInputStream("src/main/assets/config.properties");;
-//            properties.load(inputStream);
-
+        try {
+            this.properties = new Properties();
+            AssetManager assetManager = context.getAssets();
+            InputStream inputStream = assetManager.open(fileName);
+            this.properties.load(inputStream);
         }catch (Exception e){
             System.out.print(e.getMessage());
         }
+    }
 
-        return properties;
+    public String GetProperty(String key){
+        return this.properties.getProperty(key);
     }
 }

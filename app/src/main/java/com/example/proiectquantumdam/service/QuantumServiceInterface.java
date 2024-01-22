@@ -113,10 +113,7 @@ public class QuantumServiceInterface {
     }
 
     public static void ConfigureQuantumService(String serviceCrn, String apiKey, String apiUrl){
-//        quantumService = new QuantumService(serviceCrn, apiKey, apiUrl);
-        quantumService = new QuantumServiceInterface("crn:v1:bluemix:public:quantum-computing:us-east:a/650ef3eebf2a4dcb991c7c605d5a4c0f:f4710a0e-80e6-4efa-9ae3-41f2cf78164e::",
-                "IpnsqmFbhYBIYDTY5XHJ-Cu0C5CBkMXuOEbQTkhxeu4s", "https://us-east.quantum-computing.cloud.ibm.com");
-
+        quantumService = new QuantumServiceInterface(serviceCrn, apiKey, apiUrl);
     }
 
     public static QuantumServiceInterface GetInstance() {
