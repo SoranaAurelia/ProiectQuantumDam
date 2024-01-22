@@ -1,5 +1,14 @@
 package com.example.proiectquantumdam;
 
+import android.Manifest;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Menu;
@@ -10,11 +19,16 @@ import com.example.proiectquantumdam.adapter.JobsAdapter;
 import com.example.proiectquantumdam.model.QuantumJob;
 import com.example.proiectquantumdam.service.OnJobsListReceivedCallback;
 import com.example.proiectquantumdam.service.QuantumServiceInterface;
+import com.example.proiectquantumdam.utils.NotificationBuilderHelper;
 import com.example.proiectquantumdam.utils.PropertyReader;
 import com.example.proiectquantumdam.websocket.JobStreamWebSocketListener;
+import com.example.proiectquantumdam.websocket.OnMessageReceivedCallback;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
 
+import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
+import androidx.core.content.ContextCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -39,11 +53,22 @@ public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
     private RecyclerView recyclerViewJobs;
     private JobsAdapter jobsAdapter;
+    private NotificationManager notificationManager;
 
+    void requestNotificationPermission(){
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+            if(ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED){
+                ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.POST_NOTIFICATIONS}, 101);
+            }
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        requestNotificationPermission();
+        ConfigureNotificationChannel();
 
         PropertyReader propertyReader = new PropertyReader("config.properties", getApplicationContext());
         QuantumServiceInterface.ConfigureQuantumService(propertyReader.GetProperty("serviceCrn"), propertyReader.GetProperty("apiKey"), propertyReader.GetProperty("apiUrl"));
@@ -73,16 +98,6 @@ public class MainActivity extends AppCompatActivity {
 
         Button btn = findViewById(R.id.button);
 
-//        try{
-//
-//            OkHttpClient client = new OkHttpClient.Builder()
-//                    .readTimeout(0,  TimeUnit.MILLISECONDS)
-//                    .build();
-//            JobStreamWebSocketListener jobStreamWebSocketListener = new JobStreamWebSocketListener();
-//            WebSocket webSocket = client.newWebSocket(jobStreamWebSocketListener.getRequest(), jobStreamWebSocketListener);
-//        } catch (Exception e) {
-//            throw new RuntimeException(e);
-//        }
         btn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v)
             {
@@ -98,12 +113,12 @@ public class MainActivity extends AppCompatActivity {
                         }
                     });
                 }
-                StartJobStreamListener();
+                StartJobStreamListener(notificationManager, getApplicationContext());
             }
         });
     }
 
-    public static void StartJobStreamListener() {
+    public static void StartJobStreamListener(NotificationManager notificationManager, Context context) {
         OkHttpClient client = new OkHttpClient.Builder()
                 .readTimeout(0,  TimeUnit.MILLISECONDS)
                 .build();
@@ -114,14 +129,14 @@ public class MainActivity extends AppCompatActivity {
                 .addHeader("Service-Crn", "crn:v1:bluemix:public:quantum-computing:us-east:a/650ef3eebf2a4dcb991c7c605d5a4c0f:f4710a0e-80e6-4efa-9ae3-41f2cf78164e::")
                 .addHeader("accept", "text/event-stream")
                 .build();
-        JobStreamWebSocketListener listener = new JobStreamWebSocketListener();
+        JobStreamWebSocketListener listener = new JobStreamWebSocketListener(new OnMessageReceivedCallback() {
+            @Override
+            public void onJobsListReceivedCallback() {
+                notificationManager.notify(0, NotificationBuilderHelper.createNotificationCompatBuilder(context, "NotificationChannelId"));
+            }
+        });
 
         WebSocket ws = client.newWebSocket(request, listener);
-
-        //        client.newWebSocket(request, this);
-//
-//        // Trigger shutdown of the dispatcher's executor so this process can exit cleanly.
-//        client.dispatcher().executorService().shutdown();
 
     }
 
@@ -149,5 +164,24 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
         return NavigationUI.navigateUp(navController, mAppBarConfiguration)
                 || super.onSupportNavigateUp();
+    }
+
+    public void ConfigureNotificationChannel(){
+
+        notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            NotificationChannel channel = notificationManager.getNotificationChannel("NotificationChannelId");
+            if(channel == null) {
+                int importance = NotificationManager.IMPORTANCE_DEFAULT;
+                channel = new NotificationChannel("NotificationChannelId", "Some Description", importance);
+                channel.setLightColor(Color.GREEN);
+                channel.enableVibration(true);
+                // Register the channel with the system; you can't change the importance
+                // or other notification behaviors after this.
+                notificationManager.createNotificationChannel(channel);
+            }
+        }
+
+//        notificationManager.notify(0, builder.build());
     }
 }

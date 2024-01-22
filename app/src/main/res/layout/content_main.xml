@@ -61,7 +61,7 @@
             app:layout_constraintTop_toBottomOf="@id/tv_welcome"
             app:layout_constraintVertical_bias="0.02" />
 
-        <HorizontalScrollView
+        <ScrollView
             android:id="@+id/job_history"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -93,6 +93,6 @@
 
             </androidx.recyclerview.widget.RecyclerView>
 
-        </HorizontalScrollView>
+        </ScrollView>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

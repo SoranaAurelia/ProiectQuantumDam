@@ -1,10 +1,15 @@
 package com.example.proiectquantumdam.websocket;
 
 
+import android.app.NotificationManager;
+import android.content.Context;
 import android.util.Log;
+
+import com.example.proiectquantumdam.utils.NotificationBuilderHelper;
 
 import org.json.JSONObject;
 
+import java.util.ConcurrentModificationException;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
@@ -15,6 +20,12 @@ import okhttp3.WebSocketListener;
 import okio.ByteString;
 
 public final class JobStreamWebSocketListener extends WebSocketListener {
+
+    OnMessageReceivedCallback callback;
+
+    public JobStreamWebSocketListener(OnMessageReceivedCallback callback) {
+        this.callback = callback;
+    }
 
     @Override public void onOpen(WebSocket webSocket, Response response) {
         Log.i("Y", "YAHOO");
@@ -28,6 +39,7 @@ public final class JobStreamWebSocketListener extends WebSocketListener {
             JSONObject jsonObject = new JSONObject(text);
             String jobId = jsonObject.getString("id");
             String status = jsonObject.getString("status");
+            callback.onJobsListReceivedCallback();
         }
         catch (Exception e){
             Log.e("E", e.getMessage());
