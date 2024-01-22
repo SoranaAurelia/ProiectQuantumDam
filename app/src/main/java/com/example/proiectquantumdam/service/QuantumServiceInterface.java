@@ -83,11 +83,15 @@ public class QuantumServiceInterface {
                 if(response.isSuccessful()){
                     if(response.body() != null)
                         callback.onJobsListReceivedCallback(response.body().getJobs());
+                    else
+                        callback.onJobsListReceivedCallback(null);
+
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<JobsResponseDto> call, @NonNull Throwable t) {
+                callback.onJobsListReceivedCallback(null);
                 t.printStackTrace();
             }
         });

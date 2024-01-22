@@ -22,4 +22,6 @@
     <string name="change_service_and_iam_identifier">Change Service and IAM identifier</string>
     <string name="results">Results:</string>
     <string name="status_job_page_info">Status:</string>
+    <string name="servicecrn">ServiceCRN:</string>
+    <string name="save">Save</string>
 </resources>
