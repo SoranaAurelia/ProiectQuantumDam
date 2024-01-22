@@ -1,6 +1,9 @@
 package com.example.proiectquantumdam.service;
 
+import android.util.Log;
+
 import com.example.proiectquantumdam.controller.JobsController;
+import com.example.proiectquantumdam.dto.JobsResponseDto;
 
 import java.util.concurrent.TimeUnit;
 
@@ -62,17 +65,18 @@ public class QuantumServiceInterface {
 
     public void GetJobs() {
         JobsController jobService = retrofit.create(JobsController.class);
-        Call call = jobService.getJobs();
-        call.enqueue(new Callback() {
+        Call<JobsResponseDto> call = jobService.getJobs();
+        call.enqueue(new Callback<JobsResponseDto>() {
             @Override
-            public void onResponse(Call call, Response response) {
-                String res = response.body().toString();
+            public void onResponse(Call<JobsResponseDto> call, Response<JobsResponseDto> response) {
+                //String res = response.body().toString();
+                Log.i("COUNT", response.body().count+"");
 //                Log.i("RES", res);
 //                Log.e("TAG", "response 33: "+new Gson().toJson(response.body()) );
             }
 
             @Override
-            public void onFailure(Call call, Throwable t) {
+            public void onFailure(Call<JobsResponseDto> call, Throwable t) {
                 t.printStackTrace();
 //                Log.e("RES", "ERROR");
 //                System.out.println(t.toString());

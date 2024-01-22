@@ -1,5 +1,7 @@
 package com.example.proiectquantumdam.controller;
 
+import com.example.proiectquantumdam.dto.JobsResponseDto;
+
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Headers;
@@ -10,5 +12,5 @@ public interface JobsController {
             "Authorization: apikey IpnsqmFbhYBIYDTY5XHJ-Cu0C5CBkMXuOEbQTkhxeu4s",
     })
     @GET("jobs")
-    Call<Object> getJobs();
+    Call<JobsResponseDto> getJobs();
 }
