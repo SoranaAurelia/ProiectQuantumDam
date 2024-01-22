@@ -1,18 +1,12 @@
 package com.example.proiectquantumdam.service;
 
 import android.util.Log;
-import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-
-import com.example.proiectquantumdam.MainActivity;
 import com.example.proiectquantumdam.controller.JobsController;
 import com.example.proiectquantumdam.dto.JobsResponseDto;
 
-import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
-import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -78,7 +72,7 @@ public class QuantumServiceInterface {
                 .build();
     }
 
-    public void GetJobs(OnJobsListReceivedCallback callback) {
+    public void getJobs(OnJobsListReceivedCallback callback) {
         JobsController jobService = retrofit.create(JobsController.class);
         Call<JobsResponseDto> call = jobService.getJobs();
         call.enqueue(new Callback<JobsResponseDto>() {
@@ -91,6 +85,24 @@ public class QuantumServiceInterface {
 
             @Override
             public void onFailure(Call<JobsResponseDto> call, Throwable t) {
+                t.printStackTrace();
+            }
+        });
+    }
+
+    public void getJobResult(String jobId){
+        JobsController jobService = retrofit.create(JobsController.class);
+        Call<Object> call = jobService.getJobResult(jobId);
+        call.enqueue(new Callback() {
+            @Override
+            public void onResponse( Call call, Response response) {
+                if(response.isSuccessful()){
+                    Log.e("RES", "Result retrieved");
+                }
+            }
+
+            @Override
+            public void onFailure(Call call, Throwable t) {
                 t.printStackTrace();
             }
         });

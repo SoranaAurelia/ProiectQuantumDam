@@ -1,15 +1,21 @@
 package com.example.proiectquantumdam.adapter;
 
+import static androidx.core.content.ContextCompat.startActivity;
+
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.proiectquantumdam.JobViewActivity;
+import com.example.proiectquantumdam.MainActivity;
 import com.example.proiectquantumdam.R;
 import com.example.proiectquantumdam.model.QuantumJob;
 
@@ -69,6 +75,16 @@ public class JobsAdapter extends RecyclerView.Adapter<JobsAdapter.JobViewHolder>
             holder.status.setCompoundDrawablesWithIntrinsicBounds(R.drawable.status_canceled, 0, 0, 0);
             holder.status.setCompoundDrawablePadding(2);
         }
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(v.getContext(), "Job clicked " + jobs.get(holder.getAdapterPosition()).getId(), Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(context, JobViewActivity.class);
+                intent.putExtra("jobId", jobs.get(holder.getAdapterPosition()).getId());
+                context.startActivity(intent);
+            }
+        });
     }
 
     @Override
