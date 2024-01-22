@@ -9,9 +9,12 @@ import com.example.proiectquantumdam.MainActivity;
 import com.example.proiectquantumdam.controller.JobsController;
 import com.example.proiectquantumdam.dto.JobsResponseDto;
 
+import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
+import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
+import okhttp3.Request;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -21,18 +24,25 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class QuantumServiceInterface {
 
-    public static OkHttpClient getHttpClient() {
+    public static OkHttpClient getHttpClient(String apiKey, String serviceCrn) {
 
+        String apiKeyUpdated = "apikey " + apiKey;
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
         logging.setLevel(HttpLoggingInterceptor.Level.BODY);
 
-
-        //TODO : remove logging interceptors as it is to be used for development purpose
         OkHttpClient client = new OkHttpClient.Builder()
                 .connectTimeout(300, TimeUnit.SECONDS)
                 .readTimeout(300,TimeUnit.SECONDS)
 //                .writeTimeout(30, TimeUnit.SECONDS)
                 .addInterceptor(logging)
+                .addInterceptor(chain -> {
+                        Request request = chain.request().newBuilder()
+                                .addHeader("Service-Crn", serviceCrn)
+                                .addHeader("Authorization", apiKeyUpdated)
+                                .build();
+                        return chain.proceed(request);
+                    }
+                )
                 .build();
 
         return client;
@@ -62,9 +72,9 @@ public class QuantumServiceInterface {
         this.apiUrl =  apiUrl;
 
         this.retrofit =  new Retrofit.Builder()
-                .baseUrl("https://us-east.quantum-computing.cloud.ibm.com")
+                .baseUrl(this.apiUrl)
                 .addConverterFactory(GsonConverterFactory.create())
-                .client(getHttpClient()) //TODO: remove this
+                .client(getHttpClient(this.apiKey, this.serviceCrn))
                 .build();
     }
 
@@ -74,23 +84,14 @@ public class QuantumServiceInterface {
         call.enqueue(new Callback<JobsResponseDto>() {
             @Override
             public void onResponse( Call<JobsResponseDto> call, Response<JobsResponseDto> response) {
-                //String res = response.body().toString();
-//                Log.i("COUNT", response.body().count+"");
                 if(response.isSuccessful()){
                     callback.onJobsListReceivedCallback(response.body().jobs);
-                    //Log.e("COUNT", response.body().count+"");
-                }
-                else {
-                    int responseCode = response.code();
-                    //Log.e("COUNT", response.body().count+"");
                 }
             }
 
             @Override
             public void onFailure(Call<JobsResponseDto> call, Throwable t) {
                 t.printStackTrace();
-//                Log.e("RES", "ERROR");
-//                System.out.println(t.toString());
             }
         });
     }
@@ -102,15 +103,11 @@ public class QuantumServiceInterface {
             @Override
             public void onResponse(Call call, Response response) {
                 String res = response.body().toString();
-//                Log.i("RES", res);
-//                Log.e("TAG", "response 33: "+new Gson().toJson(response.body()) );
             }
 
             @Override
             public void onFailure(Call call, Throwable t) {
                 t.printStackTrace();
-//                Log.e("RES", "ERROR");
-//                System.out.println(t.toString());
             }
         });
     }
