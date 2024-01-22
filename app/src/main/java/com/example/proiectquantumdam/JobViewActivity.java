@@ -56,11 +56,11 @@ public class JobViewActivity extends AppCompatActivity {
             quantumInstance.getJobInfo(jobId, new OnJobInfoReceivedCallback() {
                 @Override
                 public void onJobInfoReceivedCallback(QuantumJob quantumJob) {
-                    tvStatus.setText(quantumJob.status);
-                    tvBackend.setText(quantumJob.backend);
-                    tvDate.setText(quantumJob.created.toString());
+                    tvStatus.setText(quantumJob.getStatus());
+                    tvBackend.setText(quantumJob.getBackend());
+                    tvDate.setText(quantumJob.getCreated().toString());
 
-                    if(quantumJob.status.equals("Completed")) {
+                    if(quantumJob.getStatus().equals("Completed")) {
                         tvStatus.setCompoundDrawablesWithIntrinsicBounds(R.drawable.job_completed, 0, 0, 0);
                         tvStatus.setCompoundDrawablePadding(2);
                     }

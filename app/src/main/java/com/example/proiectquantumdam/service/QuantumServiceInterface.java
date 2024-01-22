@@ -1,20 +1,16 @@
 package com.example.proiectquantumdam.service;
 
-import android.annotation.SuppressLint;
-import android.os.AsyncTask;
-import android.util.Log;
+import androidx.annotation.NonNull;
 
 import com.example.proiectquantumdam.controller.JobsController;
 import com.example.proiectquantumdam.dto.JobResultDto;
 import com.example.proiectquantumdam.dto.JobsResponseDto;
 import com.example.proiectquantumdam.model.QuantumJob;
 
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
-import okhttp3.ResponseBody;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -83,14 +79,15 @@ public class QuantumServiceInterface {
         Call<JobsResponseDto> call = jobService.getJobs();
         call.enqueue(new Callback<JobsResponseDto>() {
             @Override
-            public void onResponse( Call<JobsResponseDto> call, Response<JobsResponseDto> response) {
+            public void onResponse(@NonNull Call<JobsResponseDto> call, @NonNull Response<JobsResponseDto> response) {
                 if(response.isSuccessful()){
-                    callback.onJobsListReceivedCallback(response.body().jobs);
+                    if(response.body() != null)
+                        callback.onJobsListReceivedCallback(response.body().getJobs());
                 }
             }
 
             @Override
-            public void onFailure(Call<JobsResponseDto> call, Throwable t) {
+            public void onFailure(@NonNull Call<JobsResponseDto> call, @NonNull Throwable t) {
                 t.printStackTrace();
             }
         });
@@ -101,14 +98,15 @@ public class QuantumServiceInterface {
         Call<JobResultDto> call = jobService.getJobResult(jobId);
         call.enqueue(new Callback<JobResultDto>() {
             @Override
-            public void onResponse( Call<JobResultDto> call, Response<JobResultDto> response) {
+            public void onResponse(@NonNull Call<JobResultDto> call, @NonNull Response<JobResultDto> response) {
                 if(response.isSuccessful()){
-                    callback.onJobResultReceivedCallback(response.body().quasiDists);
+                    if(response.body() != null)
+                        callback.onJobResultReceivedCallback(response.body().getQuasiDists());
                 }
             }
 
             @Override
-            public void onFailure(Call<JobResultDto> call, Throwable t) {
+            public void onFailure(@NonNull Call<JobResultDto> call, @NonNull Throwable t) {
                 t.printStackTrace();
             }
         });
@@ -119,31 +117,14 @@ public class QuantumServiceInterface {
         Call<QuantumJob> call = jobService.getJobInfo(jobId);
         call.enqueue(new Callback<QuantumJob>() {
             @Override
-            public void onResponse( Call<QuantumJob> call, Response<QuantumJob> response) {
+            public void onResponse(@NonNull Call<QuantumJob> call, @NonNull Response<QuantumJob> response) {
                 if(response.isSuccessful()){
                     callback.onJobInfoReceivedCallback(response.body());
                 }
             }
 
             @Override
-            public void onFailure(Call<QuantumJob> call, Throwable t) {
-                t.printStackTrace();
-            }
-        });
-    }
-
-
-    public void GetObjectJobs(OnJobsListReceivedCallback callback) {
-        JobsController jobService = retrofit.create(JobsController.class);
-        Call call = jobService.getObjectJobs();
-        call.enqueue(new Callback() {
-            @Override
-            public void onResponse(Call call, Response response) {
-                String res = response.body().toString();
-            }
-
-            @Override
-            public void onFailure(Call call, Throwable t) {
+            public void onFailure(@NonNull Call<QuantumJob> call, @NonNull Throwable t) {
                 t.printStackTrace();
             }
         });

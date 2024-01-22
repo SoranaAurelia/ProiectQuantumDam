@@ -18,9 +18,16 @@ public class JobResultDto {
 
 
     @SerializedName("quasi_dists")
-    public ArrayList<Map<String, Double>> quasiDists;
+    private ArrayList<Map<String, Double>> quasiDists;
 
     @SerializedName("metadata")
-    public ArrayList<Metadata> metadata;
+    private ArrayList<Metadata> metadata;
 
+    public ArrayList<Map<String, Double>> getQuasiDists() {
+        return quasiDists;
+    }
+
+    public ArrayList<Metadata> getMetadata() {
+        return metadata;
+    }
 }

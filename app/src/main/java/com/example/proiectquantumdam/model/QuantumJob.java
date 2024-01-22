@@ -24,24 +24,24 @@ public class QuantumJob {
     }
 
     @SerializedName("id")
-    public String id;
+    private String id;
 
     @SerializedName("backend")
-    public String backend;
+    private String backend;
     @SerializedName("state")
-    public State state;
+    private State state;
     @SerializedName("program")
-    public Program program;
+    private Program program;
     @SerializedName("created")
-    public Date created;
+    private Date created;
     @SerializedName("cost")
-    public int cost;
+    private int cost;
     @SerializedName("bss")
-    public Bss bss;
+    private Bss bss;
     @SerializedName("usage")
-    public Usage usage;
+    private Usage usage;
     @SerializedName("status")
-    public String status;
+    private String status;
 
     public String getId() {
         return id;

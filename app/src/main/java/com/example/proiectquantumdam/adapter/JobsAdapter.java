@@ -62,12 +62,12 @@ public class JobsAdapter extends RecyclerView.Adapter<JobsAdapter.JobViewHolder>
 
     @Override
     public void onBindViewHolder(@NonNull JobViewHolder holder, int position) {
-        holder.jobId.setText(jobs.get(position).id);
-        holder.status.setText(jobs.get(position).status);
-        holder.backend.setText(jobs.get(position).backend);
-        holder.dateCreated.setText(jobs.get(position).created.toString());
+        holder.jobId.setText(jobs.get(position).getId());
+        holder.status.setText(jobs.get(position).getStatus());
+        holder.backend.setText(jobs.get(position).getBackend());
+        holder.dateCreated.setText(jobs.get(position).getCreated().toString());
 
-        if(jobs.get(position).status.equals("Completed")) {
+        if(jobs.get(position).getStatus().equals("Completed")) {
             holder.status.setCompoundDrawablesWithIntrinsicBounds(R.drawable.job_completed, 0, 0, 0);
             holder.status.setCompoundDrawablePadding(2);
         }
