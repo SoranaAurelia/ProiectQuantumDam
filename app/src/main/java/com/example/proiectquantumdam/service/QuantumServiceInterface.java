@@ -5,8 +5,10 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.example.proiectquantumdam.controller.JobsController;
+import com.example.proiectquantumdam.dto.JobResultDto;
 import com.example.proiectquantumdam.dto.JobsResponseDto;
 
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
@@ -93,50 +95,19 @@ public class QuantumServiceInterface {
         });
     }
 
-    public void getJobUpdateStream(){
+    public void getJobResult(String jobId, OnJobResultReceivedCallback callback){
         JobsController jobService = retrofit.create(JobsController.class);
-        Call<ResponseBody> call = jobService.getJobUpdates();
-        call.enqueue(new Callback<ResponseBody>() {
+        Call<JobResultDto> call = jobService.getJobResult(jobId);
+        call.enqueue(new Callback<JobResultDto>() {
             @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+            public void onResponse( Call<JobResultDto> call, Response<JobResultDto> response) {
                 if(response.isSuccessful()){
-                    Log.d("I", "connected to server");
-
-                    new AsyncTask<Void, Void, Void>() {
-                        @SuppressLint("StaticFieldLeak")
-                        @Override
-                        protected Void doInBackground(Void... voids) {
-                            Log.d("I", "file download was a success? " + response.body());
-                            return null;
-                        }
-                    }.execute();
-
-                }
-                else{
-                    Log.e("E", "Error");
+                    callback.onJobResultReceivedCallback(response.body().quasiDists);
                 }
             }
 
             @Override
-            public void onFailure(Call call, Throwable t) {
-                t.printStackTrace();
-            }
-        });
-    }
-
-    public void getJobResult(String jobId){
-        JobsController jobService = retrofit.create(JobsController.class);
-        Call<Object> call = jobService.getJobResult(jobId);
-        call.enqueue(new Callback() {
-            @Override
-            public void onResponse( Call call, Response response) {
-                if(response.isSuccessful()){
-                    Log.e("RES", "Result retrieved");
-                }
-            }
-
-            @Override
-            public void onFailure(Call call, Throwable t) {
+            public void onFailure(Call<JobResultDto> call, Throwable t) {
                 t.printStackTrace();
             }
         });

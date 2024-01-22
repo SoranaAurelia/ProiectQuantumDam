@@ -17,12 +17,13 @@
         android:layout_marginTop="4dp">
         <TextView
             android:id="@+id/v_job_title"
-            style="@style/TextAppearance.MaterialComponents.Headline5"
+            style="@style/TextAppearance.MaterialComponents.Headline6"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/job"
             android:paddingStart="20dp"
             android:paddingEnd="20dp"
+            android:layout_marginTop="20dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
@@ -32,12 +33,14 @@
 
         <TextView
             android:id="@+id/v_job_id"
-            style="@style/TextAppearance.MaterialComponents.Headline5"
+            style="@style/TextAppearance.MaterialComponents.Headline6"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/job"
             android:paddingStart="20dp"
             android:paddingEnd="20dp"
+            android:layout_marginTop="20dp"
+
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@id/v_job_title"
             app:layout_constraintHorizontal_bias="0.0"
@@ -45,6 +48,32 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.02" />
     </LinearLayout>
+    <TextView
+        android:id="@+id/v_results"
+        style="@style/TextAppearance.MaterialComponents.Headline6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/results"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:layout_marginTop="20dp"
+
+        app:layout_constraintBottom_toTopOf="@id/idBarChartResults"
+        app:layout_constraintTop_toBottomOf="@id/other_job_info"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintVertical_bias="0.02" />
+
+
+    <!--Ui component for our bar chart-->
+    <com.github.mikephil.charting.charts.BarChart
+        android:id="@+id/idBarChartResults"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        app:layout_constraintTop_toBottomOf="@id/other_job_info"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="150dp"
+        android:layout_marginStart="20dp"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

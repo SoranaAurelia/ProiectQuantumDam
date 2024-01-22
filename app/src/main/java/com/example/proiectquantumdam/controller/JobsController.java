@@ -2,7 +2,10 @@ package com.example.proiectquantumdam.controller;
 
 import android.database.Observable;
 
+import com.example.proiectquantumdam.dto.JobResultDto;
 import com.example.proiectquantumdam.dto.JobsResponseDto;
+
+import java.util.Map;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -18,7 +21,7 @@ public interface JobsController {
 
 
     @GET("jobs/{id}/results")
-    Call<Object> getJobResult(@Path("id") String jobId);
+    Call<JobResultDto> getJobResult(@Path("id") String jobId);
 
 
     @Streaming
