@@ -11,6 +11,7 @@ import com.example.proiectquantumdam.model.QuantumJob;
 import com.example.proiectquantumdam.service.OnJobsListReceivedCallback;
 import com.example.proiectquantumdam.service.QuantumServiceInterface;
 import com.example.proiectquantumdam.utils.PropertyReader;
+import com.example.proiectquantumdam.websocket.JobStreamWebSocketListener;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
 
@@ -26,6 +27,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.proiectquantumdam.databinding.ActivityMainBinding;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.WebSocket;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -66,6 +72,17 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupWithNavController(navigationView, navController);
 
         Button btn = findViewById(R.id.button);
+
+//        try{
+//
+//            OkHttpClient client = new OkHttpClient.Builder()
+//                    .readTimeout(0,  TimeUnit.MILLISECONDS)
+//                    .build();
+//            JobStreamWebSocketListener jobStreamWebSocketListener = new JobStreamWebSocketListener();
+//            WebSocket webSocket = client.newWebSocket(jobStreamWebSocketListener.getRequest(), jobStreamWebSocketListener);
+//        } catch (Exception e) {
+//            throw new RuntimeException(e);
+//        }
         btn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v)
             {
@@ -77,11 +94,35 @@ public class MainActivity extends AppCompatActivity {
                         public void onJobsListReceivedCallback(List<QuantumJob> jobs) {
                             generateDataList(jobs);
                             createToast();
+
                         }
                     });
                 }
+                StartJobStreamListener();
             }
         });
+    }
+
+    public static void StartJobStreamListener() {
+        OkHttpClient client = new OkHttpClient.Builder()
+                .readTimeout(0,  TimeUnit.MILLISECONDS)
+                .build();
+
+        Request request = new Request.Builder()
+                .url("https://us-east.quantum-computing.cloud.ibm.com/stream/jobs")
+                .addHeader("Authorization", "apikey IpnsqmFbhYBIYDTY5XHJ-Cu0C5CBkMXuOEbQTkhxeu4s")
+                .addHeader("Service-Crn", "crn:v1:bluemix:public:quantum-computing:us-east:a/650ef3eebf2a4dcb991c7c605d5a4c0f:f4710a0e-80e6-4efa-9ae3-41f2cf78164e::")
+                .addHeader("accept", "text/event-stream")
+                .build();
+        JobStreamWebSocketListener listener = new JobStreamWebSocketListener();
+
+        WebSocket ws = client.newWebSocket(request, listener);
+
+        //        client.newWebSocket(request, this);
+//
+//        // Trigger shutdown of the dispatcher's executor so this process can exit cleanly.
+//        client.dispatcher().executorService().shutdown();
+
     }
 
     private void createToast(){

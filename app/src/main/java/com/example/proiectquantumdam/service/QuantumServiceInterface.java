@@ -1,5 +1,7 @@
 package com.example.proiectquantumdam.service;
 
+import android.annotation.SuppressLint;
+import android.os.AsyncTask;
 import android.util.Log;
 
 import com.example.proiectquantumdam.controller.JobsController;
@@ -9,6 +11,7 @@ import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.ResponseBody;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -90,6 +93,37 @@ public class QuantumServiceInterface {
         });
     }
 
+    public void getJobUpdateStream(){
+        JobsController jobService = retrofit.create(JobsController.class);
+        Call<ResponseBody> call = jobService.getJobUpdates();
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if(response.isSuccessful()){
+                    Log.d("I", "connected to server");
+
+                    new AsyncTask<Void, Void, Void>() {
+                        @SuppressLint("StaticFieldLeak")
+                        @Override
+                        protected Void doInBackground(Void... voids) {
+                            Log.d("I", "file download was a success? " + response.body());
+                            return null;
+                        }
+                    }.execute();
+
+                }
+                else{
+                    Log.e("E", "Error");
+                }
+            }
+
+            @Override
+            public void onFailure(Call call, Throwable t) {
+                t.printStackTrace();
+            }
+        });
+    }
+
     public void getJobResult(String jobId){
         JobsController jobService = retrofit.create(JobsController.class);
         Call<Object> call = jobService.getJobResult(jobId);
@@ -106,6 +140,10 @@ public class QuantumServiceInterface {
                 t.printStackTrace();
             }
         });
+    }
+
+    public void subscribeToJobUpdates(){
+
     }
 
     public void GetObjectJobs(OnJobsListReceivedCallback callback) {
