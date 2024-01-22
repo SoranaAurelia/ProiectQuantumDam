@@ -1,7 +1,11 @@
 package com.example.proiectquantumdam.service;
 
 import android.util.Log;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+
+import com.example.proiectquantumdam.MainActivity;
 import com.example.proiectquantumdam.controller.JobsController;
 import com.example.proiectquantumdam.dto.JobsResponseDto;
 
@@ -26,9 +30,10 @@ public class QuantumServiceInterface {
         //TODO : remove logging interceptors as it is to be used for development purpose
         OkHttpClient client = new OkHttpClient.Builder()
                 .connectTimeout(300, TimeUnit.SECONDS)
-                .readTimeout(300,TimeUnit.SECONDS).
-                addInterceptor(logging).
-                build();
+                .readTimeout(300,TimeUnit.SECONDS)
+//                .writeTimeout(30, TimeUnit.SECONDS)
+                .addInterceptor(logging)
+                .build();
 
         return client;
     }
@@ -57,26 +62,52 @@ public class QuantumServiceInterface {
         this.apiUrl =  apiUrl;
 
         this.retrofit =  new Retrofit.Builder()
-                .baseUrl("https://us-east.quantum-computing.cloud.ibm.com/")
+                .baseUrl("https://us-east.quantum-computing.cloud.ibm.com")
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(getHttpClient()) //TODO: remove this
                 .build();
     }
 
-    public void GetJobs() {
+    public void GetJobs(OnJobsListReceivedCallback callback) {
         JobsController jobService = retrofit.create(JobsController.class);
         Call<JobsResponseDto> call = jobService.getJobs();
         call.enqueue(new Callback<JobsResponseDto>() {
             @Override
-            public void onResponse(Call<JobsResponseDto> call, Response<JobsResponseDto> response) {
+            public void onResponse( Call<JobsResponseDto> call, Response<JobsResponseDto> response) {
                 //String res = response.body().toString();
-                Log.i("COUNT", response.body().count+"");
+//                Log.i("COUNT", response.body().count+"");
+                if(response.isSuccessful()){
+                    callback.onJobsListReceivedCallback(response.body().jobs);
+                    //Log.e("COUNT", response.body().count+"");
+                }
+                else {
+                    int responseCode = response.code();
+                    //Log.e("COUNT", response.body().count+"");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<JobsResponseDto> call, Throwable t) {
+                t.printStackTrace();
+//                Log.e("RES", "ERROR");
+//                System.out.println(t.toString());
+            }
+        });
+    }
+
+    public void GetObjectJobs(OnJobsListReceivedCallback callback) {
+        JobsController jobService = retrofit.create(JobsController.class);
+        Call call = jobService.getObjectJobs();
+        call.enqueue(new Callback() {
+            @Override
+            public void onResponse(Call call, Response response) {
+                String res = response.body().toString();
 //                Log.i("RES", res);
 //                Log.e("TAG", "response 33: "+new Gson().toJson(response.body()) );
             }
 
             @Override
-            public void onFailure(Call<JobsResponseDto> call, Throwable t) {
+            public void onFailure(Call call, Throwable t) {
                 t.printStackTrace();
 //                Log.e("RES", "ERROR");
 //                System.out.println(t.toString());

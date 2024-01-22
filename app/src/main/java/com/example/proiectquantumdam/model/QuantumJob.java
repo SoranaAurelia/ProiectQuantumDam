@@ -1,5 +1,7 @@
 package com.example.proiectquantumdam.model;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.Date;
 
 public class QuantumJob {
@@ -21,14 +23,24 @@ public class QuantumJob {
         public int seconds;
     }
 
+    @SerializedName("id")
     public String id;
+
+    @SerializedName("backend")
     public String backend;
+    @SerializedName("state")
     public State state;
+    @SerializedName("program")
     public Program program;
+    @SerializedName("created")
     public Date created;
+    @SerializedName("cost")
     public int cost;
+    @SerializedName("bss")
     public Bss bss;
+    @SerializedName("usage")
     public Usage usage;
+    @SerializedName("status")
     public String status;
 
     public String getId() {

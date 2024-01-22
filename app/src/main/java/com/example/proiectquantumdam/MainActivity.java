@@ -4,7 +4,11 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.Menu;
 import android.widget.Button;
+import android.widget.Toast;
 
+import com.example.proiectquantumdam.adapter.JobsAdapter;
+import com.example.proiectquantumdam.model.QuantumJob;
+import com.example.proiectquantumdam.service.OnJobsListReceivedCallback;
 import com.example.proiectquantumdam.service.QuantumServiceInterface;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
@@ -15,13 +19,20 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.proiectquantumdam.databinding.ActivityMainBinding;
+
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
     private ActivityMainBinding binding;
+    private RecyclerView recyclerViewJobs;
+    private JobsAdapter jobsAdapter;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,9 +66,27 @@ public class MainActivity extends AppCompatActivity {
         btn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v)
             {
-                QuantumServiceInterface.GetInstance().GetJobs();
+                QuantumServiceInterface.GetInstance().GetJobs(new OnJobsListReceivedCallback() {
+                    @Override
+                    public void onJobsListReceivedCallback(List<QuantumJob> jobs) {
+                        generateDataList(jobs);
+                        createToast();
+                    }
+                });
             }
         });
+    }
+
+    private void createToast(){
+        Toast.makeText(getApplicationContext(), "Jobs updated", Toast.LENGTH_SHORT).show();
+    }
+    /*Method to generate List of data using RecyclerView with custom adapter*/
+    private void generateDataList(List<QuantumJob> jobList) {
+        recyclerViewJobs = findViewById(R.id.recyclerViewJobs);
+        jobsAdapter = new JobsAdapter(this, jobList);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(MainActivity.this);
+        recyclerViewJobs.setLayoutManager(layoutManager);
+        recyclerViewJobs.setAdapter(jobsAdapter);
     }
 
     @Override

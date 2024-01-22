@@ -26,7 +26,7 @@
             android:layout_height="match_parent">
 
             <TextView
-                android:id="@+id/title"
+                android:id="@+id/job_id"
                 style="@style/TextAppearance.Material3.TitleMedium"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -36,16 +36,17 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"/>
             <TextView
-                android:id="@+id/subtitle"
+                android:id="@+id/job_status"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:layout_constraintEnd_toEndOf="parent"
-                android:text="job_id"
+                android:text="@string/status"
                 style="@style/TextAppearance.Material3.BodyMedium"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/title"
+                app:layout_constraintTop_toBottomOf="@id/job_id"
                 android:layout_marginTop="4dp"
-                />
+                android:drawablePadding="2pt"
+                app:drawableStartCompat="@drawable/status_done" />
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -53,7 +54,7 @@
                 android:orientation="horizontal"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/subtitle"
+                app:layout_constraintTop_toBottomOf="@id/job_status"
                 android:layout_marginTop="4dp">
 
 
